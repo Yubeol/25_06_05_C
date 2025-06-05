@@ -8,66 +8,57 @@
 //다음엔 함수로 분할(매개변수 배열로 전달)
 //다음엔 매개변수 포인터로 전달.
 //+구조체
-#define _CRT_SECURE_NO_WARNINGS  // strcpy 오류 방지
 #include <stdio.h>
 #include <string.h>
 
-#define STUDENT_COUNT 3
+#define SIZE 5
 
 int main() {
-    char names[STUDENT_COUNT][20];
-    int kor[STUDENT_COUNT], eng[STUDENT_COUNT], math[STUDENT_COUNT];
-    int total[STUDENT_COUNT], rank[STUDENT_COUNT];
-    float avg[STUDENT_COUNT];
-    char grade[STUDENT_COUNT][3];
+    char name[SIZE][11];     // 이름
+    char grade[SIZE][3];     // 등급 (ex: A+, B0 등)
+    int score[SIZE][5];      // 국어, 영어, 수학, 합계, 석차
+    float avg[SIZE];         // 평균
 
     // 입력
-    for (int i = 0; i < STUDENT_COUNT; i++) {
-        printf("%d번째 학생 이름 입력: ", i + 1);
-        scanf("%s", names[i]);
-        printf("국어, 영어, 수학 점수 입력: ");
-        scanf("%d %d %d", &kor[i], &eng[i], &math[i]);
-
-        total[i] = kor[i] + eng[i] + math[i];
-        avg[i] = total[i] / 3.0f;
+    printf("학생 이름과 국어, 영어, 수학 점수를 입력하세요:\n");
+    for (int i = 0; i < SIZE; i++) {
+        printf("%d번째 학생 >> ", i + 1);
+        scanf("%s %d %d %d", name[i], &score[i][0], &score[i][1], &score[i][2]);
+        score[i][3] = score[i][0] + score[i][1] + score[i][2];     // 합계
+        avg[i] = score[i][3] / 3.0;                                 // 평균
+        score[i][4] = 1;                                            // 초기 석차는 1
     }
 
     // 석차 계산
-    for (int i = 0; i < STUDENT_COUNT; i++) {
-        rank[i] = 1;
-        for (int j = 0; j < STUDENT_COUNT; j++) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
             if (avg[i] < avg[j]) {
-                rank[i]++;
+                score[i][4]++;
             }
         }
     }
 
     // 등급 계산
-    for (int i = 0; i < STUDENT_COUNT; i++) {
-        if (avg[i] >= 95)
-            strcpy(grade[i], "A+");
-        else if (avg[i] >= 90)
-            strcpy(grade[i], "A");
-        else if (avg[i] >= 85)
-            strcpy(grade[i], "B+");
-        else if (avg[i] >= 80)
-            strcpy(grade[i], "B");
-        else if (avg[i] >= 75)
-            strcpy(grade[i], "C+");
-        else if (avg[i] >= 70)
-            strcpy(grade[i], "C");
-        else if (avg[i] >= 60)
-            strcpy(grade[i], "D");
-        else
-            strcpy(grade[i], "F");
+    for (int i = 0; i < SIZE; i++) {
+        if (avg[i] >= 95) strcpy(grade[i], "A+");
+        else if (avg[i] >= 90) strcpy(grade[i], "A");
+        else if (avg[i] >= 85) strcpy(grade[i], "B+");
+        else if (avg[i] >= 80) strcpy(grade[i], "B");
+        else if (avg[i] >= 75) strcpy(grade[i], "C+");
+        else if (avg[i] >= 70) strcpy(grade[i], "C");
+        else if (avg[i] >= 65) strcpy(grade[i], "D+");
+        else if (avg[i] >= 60) strcpy(grade[i], "D");
+        else strcpy(grade[i], "F");
     }
 
     // 출력
-    printf("\n==================== 성적표 ====================\n");
-    printf("%-10s %-5s %-5s %-5s %-5s %-7s %-4s %-4s\n", "이름", "국어", "영어", "수학", "합계", "평균", "석차", "등급");
-    for (int i = 0; i < STUDENT_COUNT; i++) {
-        printf("%-10s %-5d %-5d %-5d %-5d %-7.2f %-4d %-4s\n",
-            names[i], kor[i], eng[i], math[i], total[i], avg[i], rank[i], grade[i]);
+    printf("\n================== 성적표 ==================\n");
+    printf("이름       국어 영어 수학  합계  평균 석차 등급\n");
+    printf("===========================================\n");
+    for (int i = 0; i < SIZE; i++) {
+        printf("%-10s %4d %4d %4d %5d %6.2f %3d  %2s\n",
+               name[i], score[i][0], score[i][1], score[i][2],
+               score[i][3], avg[i], score[i][4], grade[i]);
     }
 
     return 0;
