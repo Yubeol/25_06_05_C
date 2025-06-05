@@ -1,0 +1,82 @@
+//sungjuck.c
+#include <stdio.h>
+#include <string.h>//문자열과 관련된 함수
+#define MAX 3
+
+void indata(char[][11], char[][3], int[][5], double[]);
+void outdata(char[][11], char[][3], int[][5], double[]);
+void rank(int[][5]);
+
+//포인터 = 주소값
+int main(void) { //선언된 배열보다 차수가 작아지면 무조건 포인터다.
+	char name[MAX][11], grade[MAX][3];
+	int score[MAX][5];
+	double avg[MAX];
+
+	indata(name, grade, score, avg);
+	//석차
+	rank(score);
+	//출력
+	outdata(name, grade, score, avg);
+
+	
+	return 0;
+}
+	void indata(char name[MAX][11], char grade[MAX][3], int score[MAX][5], double avg[MAX]) {
+		printf("%명의 이름, 국어, 영어, 수학 점수 입력\n", MAX);
+		for (int i = 0; i < MAX; i++) {
+			scanf_s("%s %d %d %d", name[i], sizeof(name[i]), &score[i][0], &score[i][1], &score[i][2]);
+			//합계, 평균, 등급
+			score[i][3] = score[i][0] + score[i][1] + score[i][2];
+			avg[i] = score[i][3] / 3.;
+			if (avg[i] >= 95)
+				strcpy_s(grade[i], sizeof(grade[i]), "A+");//grade[i] = "A+" 문자열을 다른 문자열에 집어 넣을땐 이렇게 쓰면 안됨.
+			else if (avg[i] >= 90)
+				strcpy_s(grade[i], sizeof(grade[i]), "A");
+			else if (avg[i] >= 85)
+				strcpy_s(grade[i], sizeof(grade[i]), "B+");
+			else if (avg[i] >= 80)
+				strcpy_s(grade[i], sizeof(grade[i]), "B");
+			else if (avg[i] >= 75)
+				strcpy_s(grade[i], sizeof(grade[i]), "C+");
+			else if (avg[i] >= 70)
+				strcpy_s(grade[i], sizeof(grade[i]), "C");
+			else if (avg[i] >= 65)
+				strcpy_s(grade[i], sizeof(grade[i]), "D+");
+			else if (avg[i] >= 60)
+				strcpy_s(grade[i], sizeof(grade[i]), "D");
+			else
+				strcpy_s(grade[i], sizeof(grade[i]), "F");
+
+		}
+		return;
+	}
+
+	void rank(int score[][5]) {
+		for (int i = 0; i < MAX; i++) {
+			score[i][4] = 1; // 석차 초기화
+			for (int j = 0; j < MAX; j++) {
+				if (score[i][3] < score[j][3]) {
+					score[i][4]++;
+				}
+			}
+		}
+	}
+
+
+
+	void outdata(char name[][11], char grade[][3], int score[][5], double avg[]) {
+		printf("\n======================= 성적표 =======================\n");
+		printf("%-10s %4s %4s %4s %4s %6s %4s %4s\n", "이름", "국어", "영어", "수학", "합계", "평균", "석차", "등급");
+		for (int i = 0; i < 54; i++) printf("=");
+		printf("\n");
+
+		for (int i = 0; i < MAX; i++) {
+			printf("%-10s %4d %4d %4d %4d %6.2lf %4d %4s\n",
+				name[i], score[i][0], score[i][1], score[i][2],
+				score[i][3], avg[i], score[i][4], grade[i]);
+		}
+
+		for (int i = 0; i < 54; i++) printf("=");
+		printf("\n");
+	}
