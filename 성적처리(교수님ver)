@@ -1,0 +1,86 @@
+//sungjuck.c
+//문제] 다음의 조건을 처리하는 성적처리 프로그램을 만드시오.
+//입력자료는 학생이름, 국어 , 영어, 수학이다.
+//처리는 입력자표를 바탕으로 합계, 평균, 석차, 등금을 출력한다.
+//등급은 평균 성적을 기준으로 A+, A, B+, B...로 산정한다.
+//출력자료는 학생이름, 국어, 영어, 수학, 합계, 평균, 석차, 등급을 출력한다.
+//구구단 출력했을때와 같이 줄, 전체제목(성적표), 칸제목, 칸을 세로로 맞추어 출력하시오.
+//처음엔 배열을 이용하여 작성
+//다음엔 함수로 분할(매개변수 배열로 전달)
+//다음엔 매개변수 포인터로 전달.
+//+구조체
+
+//학생이름, 국어, 영어, 수학, 합계, 평균, 석차, 등급
+//배열-동일타입, 연속(5명)
+//문자 - 이름(11자), 등급(1), name[5][11], grade[5][3]
+//정수 - 국어, 영어, 수학, 합계, 석차 score[5][5]
+//실수 - 평균 avg[5]
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 3
+
+int main(void) {
+    char name[MAX][11], grade[MAX][3];
+    int score[MAX][5]; // 국어, 영어, 수학, 합계, 석차
+    double avg[MAX];
+
+    printf("%d명의 이름, 국어, 영어, 수학 점수 입력\n", MAX);
+    for (int i = 0; i < MAX; i++) {
+        scanf_s("%s", name[i], sizeof(name[i]));
+        scanf_s("%d %d %d", &score[i][0], &score[i][1], &score[i][2]);
+
+        // 합계, 평균
+        score[i][3] = score[i][0] + score[i][1] + score[i][2];
+        avg[i] = score[i][3] / 3.0;
+
+        // 등급
+        if (avg[i] >= 95)
+            strcpy_s(grade[i], sizeof(grade[i]), "A+");
+        else if (avg[i] >= 90)
+            strcpy_s(grade[i], sizeof(grade[i]), "A");
+        else if (avg[i] >= 85)
+            strcpy_s(grade[i], sizeof(grade[i]), "B+");
+        else if (avg[i] >= 80)
+            strcpy_s(grade[i], sizeof(grade[i]), "B");
+        else if (avg[i] >= 75)
+            strcpy_s(grade[i], sizeof(grade[i]), "C+");
+        else if (avg[i] >= 70)
+            strcpy_s(grade[i], sizeof(grade[i]), "C");
+        else if (avg[i] >= 65)
+            strcpy_s(grade[i], sizeof(grade[i]), "D+");
+        else if (avg[i] >= 60)
+            strcpy_s(grade[i], sizeof(grade[i]), "D");
+        else
+            strcpy_s(grade[i], sizeof(grade[i]), "F");
+    }
+
+    // 석차 계산
+    for (int i = 0; i < MAX; i++) {
+        score[i][4] = 1; // 초기 석차 1등
+        for (int j = 0; j < MAX; j++) {
+            if (avg[i] < avg[j]) {
+                score[i][4]++;
+            }
+        }
+    }
+
+    // 출력
+    printf("\n======================= 성적표 =======================\n");
+    printf("%-10s %4s %4s %4s %4s %6s %4s %4s\n", "이름", "국어", "영어", "수학", "합계", "평균", "석차", "등급");
+
+    for (int i = 0; i < 54; i++) printf("="); // 구분선
+    printf("\n");
+
+    for (int i = 0; i < MAX; i++) {
+        printf("%-10s %4d %4d %4d %4d %6.2lf %4d %4s\n",
+            name[i], score[i][0], score[i][1], score[i][2],
+            score[i][3], avg[i], score[i][4], grade[i]);
+    }
+
+    for (int i = 0; i < 54; i++) printf("="); // 맨 아래 구분선
+    printf("\n");
+
+    return 0;
+}
